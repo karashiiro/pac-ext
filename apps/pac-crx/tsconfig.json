@@ -1,0 +1,5 @@
+{
+  "extends": "@goatcorp-pac/tsconfig/crx.json",
+  "include": ["src", "package.json"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

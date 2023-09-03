@@ -1,0 +1,5 @@
+# secrets
+secrets.*.js
+
+# packaged extension
+/package

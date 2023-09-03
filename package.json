@@ -1,18 +1,19 @@
 {
+  "name": "@goatcorp-pac/pac-ext",
   "private": true,
   "scripts": {
+    "daemon:clean": "turbo daemon clean",
+    "daemon:start": "turbo daemon start",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\""
   },
   "devDependencies": {
-    "eslint": "^8.48.0",
+    "@goatcorp-pac/tsconfig": "*",
     "prettier": "^3.0.3",
-    "tsconfig": "*",
     "turbo": "latest"
   },
-  "name": "pac-ext",
   "packageManager": "npm@8.3.1",
   "workspaces": [
     "apps/*",

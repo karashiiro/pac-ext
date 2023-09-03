@@ -1,0 +1,7 @@
+{
+  "extends": "@goatcorp-pac/tsconfig/crx.json",
+  "compilerOptions": {
+    "composite": true
+  },
+  "include": ["src", "package.json", "vite.config.ts"]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@goatcorp-pac/core-ui",
+  "version": "0.0.0",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "solid-js": "^1.4.2"
+  },
+  "devDependencies": {
+    "@goatcorp-pac/tsconfig": "*",
+    "eslint-config-goatcorp-pac": "*",
+    "typescript": "^5.2.2"
+  }
+}

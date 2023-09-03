@@ -1,5 +1,6 @@
 import { Octokit } from 'octokit';
 import { getPAT } from '../storage';
+import parseGitPatch from 'parse-git-patch';
 
 interface GitHubDiffInfo {
   owner: string;
@@ -54,8 +55,8 @@ async function init() {
 
   console.log(compare);
 
-  const rawDiff = await fetch(compare.data.diff_url);
-  console.log(await rawDiff.text());
+  const rawPatch = await fetch(compare.data.patch_url).then((res) => res.text());
+  console.log(parseGitPatch(rawPatch));
 }
 
 await init();

@@ -10,12 +10,14 @@ function githubDiffInfo(pathname: string): [string, string] | null {
   return [startCommit, endCommit];
 }
 
-type LineDiff =
-  | { type: 'delete'; lineNumber: number }
-  | { type: 'add'; lineNumber: number }
-  | { type: 'replace'; lineNumber: number };
+type LineDiff = {
+  type: 'delete' | 'add' | 'replace';
+  lineNumber: number;
+  line?: { old?: string; new?: string };
+};
 
 function parseChanges(content: Element[]): LineDiff[] {
+  const lines = new Map<number, { old?: string; new?: string }>();
   const changes = new Map<number, 'delete' | 'add' | 'replace'>();
   for (const row of content) {
     if (row.classList.contains('js-expandable-line')) {
@@ -40,6 +42,15 @@ function parseChanges(content: Element[]): LineDiff[] {
       continue;
     }
 
+    const lineSpan = cells[2].querySelectorAll('.blob-code-inner') as NodeListOf<HTMLSpanElement>;
+    const line = lineSpan[0].innerText;
+    const isLineOld = oldLineNumber != null;
+    const lastLine = lines.get(lineNumber);
+    lines.set(lineNumber, {
+      old: isLineOld ? line : lastLine?.old,
+      new: !isLineOld ? line : lastLine?.new,
+    });
+
     const isDelete = cells[0].classList.contains('blob-num-deletion');
     const nextChangeType = isDelete ? 'delete' : 'add';
     const lastChangeType = changes.get(lineNumber);
@@ -53,6 +64,7 @@ function parseChanges(content: Element[]): LineDiff[] {
   return Array.from(changes.entries()).map(([lineNumber, changeType]) => ({
     type: changeType,
     lineNumber: lineNumber,
+    line: lines.get(lineNumber),
   }));
 }
 

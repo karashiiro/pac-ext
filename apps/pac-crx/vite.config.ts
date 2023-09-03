@@ -7,6 +7,9 @@ import meta from './package.json';
 
 export default defineConfig(() => {
   return {
+    resolve: {
+      mainFields: ['browser', 'module', 'jsnext:main', 'jsnext'],
+    },
     build: {
       emptyOutDir: true,
       outDir: 'build',

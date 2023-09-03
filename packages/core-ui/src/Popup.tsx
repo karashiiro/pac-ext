@@ -1,21 +1,25 @@
-import { createSignal } from 'solid-js';
-
+import { Suspense, createResource } from 'solid-js';
+import { ExtensionSettings } from './settings';
 import './Popup.module.css';
 
 /**
  * Popup component.
  */
-export const Popup = () => {
-  const [crx] = createSignal('create-chrome-ext');
+export const Popup = ({ settings }: { settings: ExtensionSettings }) => {
+  const [pat, { mutate }] = createResource(settings.getPAT);
   return (
     <main>
-      <h3>Popup Page!</h3>
-
-      <h6>v 0.0.0</h6>
-
-      <a href="https://www.npmjs.com/package/create-chrome-ext" target="_blank">
-        Power by {crx()}
-      </a>
+      <Suspense fallback={<p>Loading extension settings...</p>}>
+        <h1>GitHub PAT</h1>
+        <input
+          placeholder="Enter your GitHub PAT"
+          value={pat()}
+          onChange={(ev) => {
+            mutate(ev.currentTarget.value);
+            settings.setPAT(ev.currentTarget.value);
+          }}
+        />
+      </Suspense>
     </main>
   );
 };

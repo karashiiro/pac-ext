@@ -12,6 +12,7 @@
   "devDependencies": {
     "@goatcorp-pac/tsconfig": "*",
     "prettier": "^3.0.3",
+    "tree-sitter-cli": "^0.20.8",
     "turbo": "latest"
   },
   "packageManager": "npm@8.3.1",

@@ -79,3 +79,27 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+## Tree-sitter Grammar Notes
+The C# grammar is prebuilt for convenience, this section can generally be ignored.
+
+Tree-sitter can build language grammars using either a system Emscripten install or in Docker.
+Docker builds seem to fail on Windows no matter what, so a system Emscripten install might be
+required.
+
+Additionally, Tree-sitter and the language grammar must have been built with the same
+Emscripten version. Currently, this extension uses Tree-sitter 0.20.3, which was built
+with Emscripten 2.0.24. Additional version mappings can be found
+[here](https://github.com/sogaiu/ts-questions/blob/master/questions/which-version-of-emscripten-should-be-used-for-the-playground/README.md#versions).
+
+The language grammar can be built with the following command from the repository root:
+```sh
+npx tree-sitter build-wasm lib/tree-sitter-c-sharp
+```
+
+Alternatively, at the time of writing, the following command will also work ([source](https://github.com/tree-sitter/tree-sitter/blob/524bf7e2c664d4a5dbd0c20d4d10f1e58f99e8ce/cli/src/wasm.rs#L21)):
+```sh
+emcc -o tree-sitter-c_sharp.wasm -Os -s WASM=1 -s SIDE_MODULE=1 -s TOTAL_MEMORY=33554432 -s NODEJS_CATCH_EXIT=0 -s NODEJS_CATCH_REJECTION=0 -s 'EXPORTED_FUNCTIONS=["_tree_sitter_c_sharp_"]' -fno-exceptions -I lib/tree-sitter-c-sharp/src lib/tree-sitter-c-sharp/src/scanner.c lib/tree-sitter-c-sharp/src/parser.c
+```
+
+The output file should be placed at `apps/pac-crx/wasm/tree-sitter-c_sharp.wasm`.

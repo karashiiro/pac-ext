@@ -7,7 +7,7 @@ const packageName = packageNameParts[packageNameParts.length - 1];
 export default defineManifest({
   name: 'goatcorp PAC extension',
   short_name: packageName,
-  author: meta.author,
+  author: meta.author.name,
   description: meta.description,
   version: meta.version,
   manifest_version: 3,
@@ -30,7 +30,13 @@ export default defineManifest({
   ],
   web_accessible_resources: [
     {
-      resources: ['img/logo-16.png', 'img/logo-34.png', 'img/logo-48.png', 'img/logo-128.png'],
+      resources: [
+        'img/logo-16.png',
+        'img/logo-34.png',
+        'img/logo-48.png',
+        'img/logo-128.png',
+        'parser/index.html',
+      ],
       matches: [],
     },
   ],

@@ -1,13 +1,15 @@
 {
   "name": "@goatcorp-pac/pac-crx",
-  "author": "goatcorp",
+  "author": {
+    "name": "goatcorp"
+  },
   "version": "0.1.0",
   "private": true,
   "description": "",
   "type": "module",
   "license": "AGPL-3.0-or-later",
   "engines": {
-    "node": ">=16.14.0"
+    "node": ">=18.12.0"
   },
   "scripts": {
     "dev": "vite",
@@ -19,7 +21,8 @@
     "@goatcorp-pac/core-ui": "*",
     "octokit": "^3.1.0",
     "parse-git-patch": "^1.2.2",
-    "solid-js": "^1.4.2"
+    "solid-js": "^1.4.2",
+    "web-tree-sitter": "0.20.3"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "1.0.12",

@@ -16,6 +16,9 @@ export default defineConfig(() => {
       target: 'esnext',
       polyfillDynamicImport: false,
       rollupOptions: {
+        input: {
+          parser: 'parser/index.html',
+        },
         output: {
           chunkFileNames: 'assets/chunk-[hash].js',
         },

@@ -1,6 +1,27 @@
 import { Octokit } from 'octokit';
 import { getPAT } from '../storage';
 import parseGitPatch from 'parse-git-patch';
+import { ParserEvent } from '../parser/messages';
+
+function injectParser() {
+  // tree-sitter must be injected into the page in an iframe to circumvent GitHub's CSP configuration.
+  // This content script can communicate with the parser using Chrome's runtime messaging API.
+  const src = chrome.runtime.getURL('parser/index.html');
+  const iframe = new DOMParser().parseFromString(`<iframe src="${src}"></iframe>`, 'text/html').body
+    .firstElementChild!;
+  iframe.setAttribute('hidden', '');
+  document.body.append(iframe);
+}
+
+function parseCode(code: string) {
+  // TODO: Recover Parser.Tree prototype?
+  return chrome.runtime.sendMessage<ParserEvent>({
+    event: 'parseCode',
+    value: {
+      code,
+    },
+  });
+}
 
 interface GitHubDiffInfo {
   owner: string;
@@ -38,6 +59,13 @@ async function init() {
 
   const { owner, repo, baseCommit, headCommit } = diffInfo;
   console.log(`GitHub diff viewer ${baseCommit}..${headCommit}`);
+
+  injectParser();
+
+  // TODO: Remove this and add some kind of synchronization between this and the parser (can't use chrome.tabs in content scripts)
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  console.log(await parseCode(`Console.WriteLine("Hello, world!");`));
 
   const pat = await getPAT();
   if (!pat) {

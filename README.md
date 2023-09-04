@@ -80,7 +80,17 @@ Learn more about the power of Turborepo:
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
 
-## Tree-sitter Grammar Notes
+## Tree-sitter Notes
+
+### WASM Build
+Tree-sitter ships with a WASM binary, which is stored at `node_modules/web-tree-sitter/tree-sitter.wasm`.
+The JS bindings dynamically load this file, which Vite can't handle automatically. This file has therefore
+been copied to `apps/pac-crx/wasm/tree-sitter.wasm` and needs to be kept updated until this can be handled
+by the build config or otherwise be imported statically by the extension
+([vite-plugin-static-copy](https://www.npmjs.com/package/vite-plugin-static-copy) doesn't work for some
+reason).
+
+### Language Grammars
 The C# grammar is prebuilt for convenience, this section can generally be ignored.
 
 Tree-sitter can build language grammars using either a system Emscripten install or in Docker.

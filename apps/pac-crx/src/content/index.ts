@@ -13,11 +13,19 @@ function injectParser() {
 }
 
 function parseCode(code: string) {
-  // TODO: Recover Parser.Tree prototype?
   return chrome.runtime.sendMessage<ParserEvent>({
     event: 'parseCode',
     value: {
       code,
+    },
+  });
+}
+
+function getParseString(id: string) {
+  return chrome.runtime.sendMessage<ParserEvent>({
+    event: 'getParseString',
+    value: {
+      id,
     },
   });
 }
@@ -75,8 +83,6 @@ async function init() {
   // TODO: Remove this and add some kind of synchronization between this and the parser (can't use chrome.tabs in content scripts)
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.log(await parseCode(`Console.WriteLine("Hello, world!");`));
-
   const pat = await getPAT();
   if (!pat) {
     console.warn('PAC extension PAT not set!');
@@ -113,6 +119,13 @@ async function init() {
   }
 
   console.log(changedFiles);
+
+  for (const fileState of Array.from(changedFiles.entries())
+    .filter(([path]) => path.endsWith('.cs'))
+    .map(([, f]) => f)) {
+    console.log(await parseCode(fileState.old.data).then(({ id }) => getParseString(id)));
+    console.log(await parseCode(fileState.new.data).then(({ id }) => getParseString(id)));
+  }
 }
 
 await init();

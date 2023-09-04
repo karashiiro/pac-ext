@@ -1,6 +1,5 @@
 import { Octokit } from 'octokit';
 import { getPAT } from '../storage';
-import parseGitPatch from 'parse-git-patch';
 import { ParserEvent } from '../parser/messages';
 
 function injectParser() {
@@ -47,6 +46,17 @@ function githubDiffInfo(pathname: string): GitHubDiffInfo | null {
   return { owner, repo, baseCommit, headCommit };
 }
 
+function fetchGitHubFileContent(owner: string, repo: string, commitSha: string, fileName: string) {
+  return fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${commitSha}/${fileName}`).then(
+    (res) => res.text(),
+  );
+}
+
+interface FileState {
+  path: string;
+  data: string;
+}
+
 async function init() {
   if (document.location.hostname !== 'github.com') {
     return;
@@ -83,8 +93,26 @@ async function init() {
 
   console.log(compare);
 
-  const rawPatch = await fetch(compare.data.patch_url).then((res) => res.text());
-  console.log(parseGitPatch(rawPatch));
+  const changedFiles = new Map<string, { old: FileState; new: FileState }>();
+  for (const file of compare.data.files?.filter((f) => f.previous_filename) ?? []) {
+    // file.blob_url has the new file contents, but there's no link to the old file contents
+    const [oldContent, newContent] = await Promise.all([
+      fetchGitHubFileContent(owner, repo, baseCommit, file.previous_filename!),
+      fetchGitHubFileContent(owner, repo, headCommit, file.filename),
+    ]);
+    changedFiles.set(file.filename, {
+      old: {
+        path: file.previous_filename!,
+        data: oldContent,
+      },
+      new: {
+        path: file.filename,
+        data: newContent,
+      },
+    });
+  }
+
+  console.log(changedFiles);
 }
 
 await init();

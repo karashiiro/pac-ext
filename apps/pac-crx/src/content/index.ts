@@ -94,15 +94,15 @@ async function init() {
   console.log(compare);
 
   const changedFiles = new Map<string, { old: FileState; new: FileState }>();
-  for (const file of compare.data.files?.filter((f) => f.previous_filename) ?? []) {
+  for (const file of compare.data.files ?? []) {
     // file.blob_url has the new file contents, but there's no link to the old file contents
     const [oldContent, newContent] = await Promise.all([
-      fetchGitHubFileContent(owner, repo, baseCommit, file.previous_filename!),
+      fetchGitHubFileContent(owner, repo, baseCommit, file.previous_filename ?? file.filename),
       fetchGitHubFileContent(owner, repo, headCommit, file.filename),
     ]);
     changedFiles.set(file.filename, {
       old: {
-        path: file.previous_filename!,
+        path: file.previous_filename ?? file.filename,
         data: oldContent,
       },
       new: {

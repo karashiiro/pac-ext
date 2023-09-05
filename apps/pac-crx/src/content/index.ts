@@ -1,6 +1,6 @@
 import { Octokit } from 'octokit';
 import { getPAT } from '../storage';
-import { injectParser, parseCode, getParseString } from '../parser/api';
+import { injectParser, parseCode, getParseString } from '../parser/client';
 
 interface GitHubDiffInfo {
   owner: string;

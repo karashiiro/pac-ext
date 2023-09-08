@@ -1,6 +1,6 @@
 import { Octokit } from 'octokit';
 import { getPAT } from '../storage';
-import { injectParser, parseCode, getParseString } from '../parser/client';
+import { injectParser, parseCode, getTreeString } from '../parser/client';
 
 interface GitHubDiffInfo {
   owner: string;
@@ -95,8 +95,10 @@ async function init() {
   for (const fileState of Array.from(changedFiles.entries())
     .filter(([path]) => path.endsWith('.cs'))
     .map(([, f]) => f)) {
-    console.log(await parseCode(fileState.old.data).then(({ id }) => getParseString(id)));
-    console.log(await parseCode(fileState.new.data).then(({ id }) => getParseString(id)));
+    const { id: baseTreeId } = await parseCode(fileState.old.data);
+    const { id: headTreeId } = await parseCode(fileState.new.data);
+    console.log(await getTreeString(baseTreeId));
+    console.log(await getTreeString(headTreeId));
   }
 }
 

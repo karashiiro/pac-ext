@@ -2,7 +2,16 @@ interface ParseCodeEventArgs {
   code: string;
 }
 
-interface GetParseStringEventArgs {
+export interface ParseCodeResult {
+  id: string;
+}
+
+interface DiffTreesEventArgs {
+  base: string;
+  head: string;
+}
+
+interface GetTreeStringEventArgs {
   id: string;
 }
 
@@ -12,6 +21,10 @@ export type ParserEvent =
       value: ParseCodeEventArgs;
     }
   | {
-      event: 'getParseString';
-      value: GetParseStringEventArgs;
+      event: 'diffTrees';
+      value: DiffTreesEventArgs;
+    }
+  | {
+      event: 'getTreeString';
+      value: GetTreeStringEventArgs;
     };

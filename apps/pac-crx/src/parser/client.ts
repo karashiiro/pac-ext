@@ -1,4 +1,5 @@
-import { ParserEvent } from './messages';
+import type Parser from 'web-tree-sitter';
+import { ParseCodeResult, ParserEvent } from './messages';
 
 export function injectParser(element: Element) {
   // tree-sitter must be injected into the page in an iframe to circumvent GitHub's CSP configuration.
@@ -10,7 +11,7 @@ export function injectParser(element: Element) {
   element.append(iframe);
 }
 
-export function parseCode(code: string) {
+export function parseCode(code: string): Promise<ParseCodeResult> {
   return chrome.runtime.sendMessage<ParserEvent>({
     event: 'parseCode',
     value: {
@@ -19,9 +20,19 @@ export function parseCode(code: string) {
   });
 }
 
-export function getParseString(id: string) {
+export function diffTrees(base: string, head: string): Promise<Parser.Range[]> {
   return chrome.runtime.sendMessage<ParserEvent>({
-    event: 'getParseString',
+    event: 'diffTrees',
+    value: {
+      base,
+      head,
+    },
+  });
+}
+
+export function getTreeString(id: string): Promise<string> {
+  return chrome.runtime.sendMessage<ParserEvent>({
+    event: 'getTreeString',
     value: {
       id,
     },

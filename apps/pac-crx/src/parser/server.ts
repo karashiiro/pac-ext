@@ -12,7 +12,10 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     case 'parseCode':
       sendResponse(parseCode(event.value.code));
       break;
-    case 'getParseString':
+    case 'diffTrees':
+      sendResponse(diffTrees(event.value.base, event.value.head));
+      break;
+    case 'getTreeString':
       sendResponse(parseResults.get(event.value.id)?.rootNode.toString());
       break;
     default:
@@ -47,4 +50,15 @@ function parseCode(code: string): ParseCodeResult {
   const tree = parser.parse(code);
   parseResults.set(id, tree);
   return { id };
+}
+
+function diffTrees(baseId: string, headId: string) {
+  const base = parseResults.get(baseId);
+  const head = parseResults.get(headId);
+  if (base == null || head == null) {
+    throw new Error('One or both of the requested trees do not exist.');
+  }
+
+  const diff = base.getChangedRanges(head);
+  return diff;
 }

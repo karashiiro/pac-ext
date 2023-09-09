@@ -1,0 +1,4 @@
+{
+  "extends": "@goatcorp-pac/tsconfig/solid.json",
+  "include": ["src"]
+}

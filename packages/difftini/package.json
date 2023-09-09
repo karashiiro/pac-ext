@@ -1,0 +1,20 @@
+{
+  "name": "@goatcorp-pac/difftini",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@goatcorp-pac/tsconfig": "*",
+    "eslint-config-goatcorp-pac": "*",
+    "typescript": "^5.2.2"
+  }
+}
